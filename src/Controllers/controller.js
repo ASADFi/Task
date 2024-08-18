@@ -76,6 +76,7 @@ http: exports.getcountries = async (req, res) => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
+        cache.set(url, data.response.holidays);
 
       res.json({ Countries: data.response });
     }
