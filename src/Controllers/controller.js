@@ -4,6 +4,7 @@ const countries = require("countries-list").countries;
 const NodeCache = require("node-cache");
 
 const access_token = process.env.API_TOKEN;
+const ai_token = process.env.AI_TOKEN;
 //localhost:3000/holiday?country=USA&year=2024
 
 const cache = new NodeCache({ stdTTL: 3600 });
@@ -58,10 +59,10 @@ exports.getHolidays = async (req, res) => {
   }
 };
 //localhost:3000/countries
-http: exports.getcountries = async (req, res) => {
-  const country = req.query.country;
+ exports.getcountries = async (req, res) => {
+  // const country = req.query.country;
 
-  console.log("Params:", country);
+  // console.log("Params:", country);
 
   try {
     const url = `https://calendarific.com/api/v2/countries?&api_key=${access_token}`;
@@ -85,3 +86,75 @@ http: exports.getcountries = async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch countries" });
   }
 };
+exports.getImages = async (req, res) => {
+  // Extract parameters from the request if needed (e.g., prompt, negative_prompt)
+  const {
+    prompt,
+    negative_prompt,
+    num_inference_steps,
+    guidance_scale,
+    seed,
+    num_images,
+    image,
+    styling,
+  } = req.body;
+
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required!" }); // Use 400 for bad request
+  }
+
+  if (typeof prompt !== "string" || prompt.trim() === "") {
+    return res
+      .status(400)
+      .json({ error: "Prompt must be a non-empty string!" }); // Use 400 for bad request
+  }
+  try {
+    const url = `https://api.freepik.com/v1/ai/text-to-image`;
+    console.log("URL:", url);
+
+    // Set up the request headers
+    const response = await fetch(url, {
+      method: "POST", // Set the method to POST
+      headers: {
+        "Content-Type": "application/json", // Specify the content type
+        "x-freepik-api-key": `${ai_token}`, // Replace <api-key> with your actual API key
+        Accept: "application/json", // Specify the expected response type
+      },
+      body: JSON.stringify({
+        prompt,
+        negative_prompt,
+        num_inference_steps,
+        guidance_scale,
+        seed,
+        num_images,
+        image,
+        styling,
+      }), // Send the request body as JSON
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Prepend `data:image/png;base64,` to each Base64 string
+    const updatedData = data.data.map((item) => ({
+      ...item,
+      base64: `data:image/png;base64,${item.base64}`,
+    }));
+
+    // Return the updated data
+    res.json({ data: updatedData });
+  } catch (err) {
+    console.error("Error fetching images:", err);
+    return res.status(500).json({ error: "Failed to fetch images" });
+  }
+};
+
+
+
+
+
+
+
