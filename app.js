@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin,X-Request-With,context-Type,Accept,Authorization,x-freepik-api-key,Accept"
+    "Origin,X-Request-With,Content-Type,Accept,Authorization,x-freepik-api-key"
   );
 
   res.header(
