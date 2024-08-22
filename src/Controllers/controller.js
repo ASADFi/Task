@@ -106,7 +106,7 @@ exports.getImages = async (req, res) => {
   if (typeof prompt !== "string" || prompt.trim() === "") {
     return res
       .status(400)
-      .json({ error: "Prompt must be a non-empty string!" }); // Use 400 for bad request
+      .json({ error: "Prompt must  be a non-empty string!" }); // Use 400 for bad request
   }
   try {
     const url = `https://api.freepik.com/v1/ai/text-to-image`;

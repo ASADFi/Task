@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 
 const profilesRouter = require("./src/Routes/router");
 
-
 app.use(morgan("dev"));
 
 app.use(
@@ -26,7 +25,7 @@ app.use((req, res, next) => {
 
   res.header(
     "Access-Control-Allow-Headers",
-    "Origin,X-Request-With,context-Type,Accept,Authorization,appKey"
+    "Origin,X-Request-With,context-Type,Accept,Authorization,x-freepik-api-key,Accept"
   );
 
   res.header(
@@ -44,7 +43,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
 app.use(profilesRouter);
 // console.log("Connected!")
 
