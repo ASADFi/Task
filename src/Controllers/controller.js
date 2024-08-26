@@ -145,7 +145,7 @@ exports.getImages = async (req, res) => {
     }));
 
     // Return the updated data
-    res.json({ data: updatedData });
+    res.json({ data: updatedData,userobj:req.body.prompt });
   } catch (err) {
     console.error("Error fetching images:", err);
     return res.status(500).json({ error: "Failed to fetch images" });
